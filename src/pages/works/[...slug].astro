@@ -1,0 +1,47 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getPics, picUrl } from '../../pics';
+
+// 1. Generate a new path for every collection entry
+export async function getStaticPaths() {
+  const pics = await getPics();
+  return pics.map(entry => ({
+    params: { slug: entry.slug }, props: { entry },
+  }));
+}
+
+// 2. For your template, you can get the entry directly from the prop
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+const pics = await getPics();
+
+const nav = [
+    ['first', pics[0]],
+    ['prev', pics[pics.findIndex(x => x.slug == entry.slug) - 1]],
+    ['next', pics[pics.findIndex(x => x.slug == entry.slug) + 1]],
+    ['last', pics[pics.length - 1]],
+] as const;
+---
+
+<Layout title=`ANNAJA-${entry.data.title}`>
+    <link slot="head" rel="stylesheet" href="/works.css">
+    <div id="nav_stack">
+        {nav.map(([title, tgt]) => tgt === undefined || tgt.slug === entry.slug
+            ? <div><a class="nav_link disabled">{title}</a></div>
+            : <div><a class="nav_link" href={picUrl(tgt)}>{title}</a></div>
+        )}
+    </div>
+    <figure id="imageHolder"><Content /></figure>
+    <article>
+        <div class="details_title">
+            <p>Title: </p><span>{entry.data.title}</span>
+        </div>
+        <div class="details">
+            <p><span>Width: {entry.data.width}cm, Height: {entry.data.height}cm</span></p>
+        </div>
+        <div class=`details ${entry.data.price ? "" : "missing"}`>
+            <p>Price: </p><span>{entry.data.price}</span>
+        </div>
+    </article>
+</Layout>

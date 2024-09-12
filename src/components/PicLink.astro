@@ -1,0 +1,20 @@
+---
+import { Image } from 'astro:assets'
+import { getPics, picUrl, type Pic } from '../pics'
+
+interface Props {
+    pic?: Pic
+    slug?: string
+}
+
+const pic = Astro.props.pic ?? (await getPics()).find(p => p.slug == Astro.props.slug);
+
+if (!pic) throw new Error("Invalid slug");
+
+const { Content } = await pic.render();
+
+---
+
+<a href={picUrl(pic)}>
+    <Content />
+</a>

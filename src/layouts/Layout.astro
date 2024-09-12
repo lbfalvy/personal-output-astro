@@ -1,50 +1,64 @@
 ---
+import { getPics, picUrl } from '../pics';
+
 interface Props {
 	title: string;
+	meta?: [string, string][];
 }
 
-const { title } = Astro.props;
+const { title, meta } = Astro.props;
+
+const pics = await getPics();
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content="Astro description" />
-		<meta name="viewport" content="width=device-width" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
+		<link rel="stylesheet" href="/main.css">
+		<script src="https://kit.fontawesome.com/383945ce77.js" crossorigin="anonymous"></script>
+		{meta?.map(([name, content]) => (
+			<meta name={name} content={content} />
+		))}
 		<title>{title}</title>
+		<slot name="head" />
 	</head>
 	<body>
-		<slot />
+		<nav>
+			<div class="nav">
+				<h1 class="title"><a href="/">annaja</a></h1>
+				<div id="dropdown" class="dropdown-content">
+					<a id="menu-about" href="/about">about</a>
+					<a id="menu-works" href={picUrl(pics.reverse()[0])}>works</a>
+					<a id="menu-contact" href="/contact">contact</a>
+				</div>
+			</div>
+			<div class="menuToggle" onclick="toggleMenu(this)">
+				<div class="bar1"></div>
+				<div class="bar2"></div>
+				<div class="bar3"></div>
+			</div>
+		</nav>
+		<main>
+			<slot/>
+		</main>
+		<footer>
+			<section class="sociallinks">
+				<a href="https://www.instagram.com/annaja_personal_output/" target="_blank" title="AnnaJa on Instagram"><i class="fa-brands fa-square-instagram"></i></a>
+				<a href="https://www.facebook.com/profile.php?id=100070068163815" target="_blank" title="AnnaJa on Facebook"><i class="fa-brands fa-square-facebook"></i></a>
+			</section>
+		</footer>
+		<!--  mobile menu toggle: -->
+		<script>
+			function toggleMenu(x: HTMLElement) {
+				x.classList.toggle("change");
+				let dropdown = document.getElementById("dropdown");
+				dropdown?.classList.toggle("show");
+			}
+		</script>
 	</body>
 </html>
-<style is:global>
-	:root {
-		--accent: 136, 58, 234;
-		--accent-light: 224, 204, 250;
-		--accent-dark: 49, 10, 101;
-		--accent-gradient: linear-gradient(
-			45deg,
-			rgb(var(--accent)),
-			rgb(var(--accent-light)) 30%,
-			white 60%
-		);
-	}
-	html {
-		font-family: system-ui, sans-serif;
-		background: #13151a;
-	}
-	code {
-		font-family:
-			Menlo,
-			Monaco,
-			Lucida Console,
-			Liberation Mono,
-			DejaVu Sans Mono,
-			Bitstream Vera Sans Mono,
-			Courier New,
-			monospace;
-	}
-</style>

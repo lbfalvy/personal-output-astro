@@ -1,0 +1,17 @@
+---
+import { Image } from 'astro:assets';
+import { getPics } from '../pics'
+
+interface Props {
+    slug: string,
+    src: ImageMetadata
+}
+
+const { slug, src } = Astro.props;
+
+const pic = (await getPics()).find(x => x.slug == slug);
+
+if (pic == undefined) throw new Error("Invalid slug!");
+---
+
+<Image src={src} alt={slug} widths={[400, src.width]} />
