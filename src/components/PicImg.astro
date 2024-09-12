@@ -14,4 +14,4 @@ const pic = (await getPics()).find(x => x.slug == slug);
 if (pic == undefined) throw new Error("Invalid slug!");
 ---
 
-<Image src={src} alt={slug} widths={[400, src.width]} />
+<Image src={src} alt={slug} widths={[600, src.width]} />
