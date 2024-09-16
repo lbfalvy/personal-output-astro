@@ -8,10 +8,7 @@ for (const { title, size: [width, height], source, price } of pics) {
 title: ${title}
 width: ${width}
 height: ${height}
+image: ./${slug}.jpg
 ${priceText}---
-import src from './${slug}.jpg'
-import PicImg from '../../components/PicImg.astro'
-
-<PicImg src={src} slug='${slug}' />
 `);
 }

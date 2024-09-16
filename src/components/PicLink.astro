@@ -16,5 +16,5 @@ const { Content } = await pic.render();
 ---
 
 <a href={picUrl(pic)}>
-    <Content />
+    <Image src={pic.data.image} alt={pic.slug} width={600} />
 </a>
