@@ -1,0 +1,19 @@
+---
+type Props = astroHTML.JSX.AnchorHTMLAttributes & { area: string };
+let cls = Astro.props.class ?? '';
+if (new URL(Astro.request.url).pathname.startsWith(Astro.props.area)) {
+  cls += " active"
+}
+---
+<a {...Astro.props} class={cls + " nav_link"}><slot/></a>
+
+<style>
+  a {
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  .active {
+    font-weight: 600;
+  }
+</style>

@@ -1,48 +1,198 @@
 ---
-import PicImg from '../../components/PicImg.astro';
 import Layout from '../../layouts/Layout.astro';
 import { getPics, picUrl } from '../../pics';
+import { Image } from 'astro:assets';
 
 // 1. Generate a new path for every collection entry
 export async function getStaticPaths() {
   const pics = await getPics();
   return pics.map(entry => ({
-    params: { slug: entry.slug }, props: { entry },
+  params: { slug: entry.slug }, props: { entry },
   }));
 }
 
 // 2. For your template, you can get the entry directly from the prop
 const { entry } = Astro.props;
-const { Content } = await entry.render();
 
 const pics = await getPics();
 
 const nav = [
-    ['first', pics[0]],
-    ['prev', pics[pics.findIndex(x => x.slug == entry.slug) - 1]],
-    ['next', pics[pics.findIndex(x => x.slug == entry.slug) + 1]],
-    ['last', pics[pics.length - 1]],
+  ['first', pics[0]],
+  ['prev', pics[pics.findIndex(x => x.slug == entry.slug) - 1]],
+  ['next', pics[pics.findIndex(x => x.slug == entry.slug) + 1]],
+  ['last', pics[pics.length - 1]],
 ] as const;
 ---
 
 <Layout title=`ANNAJA-${entry.data.title}`>
-    <link slot="head" rel="stylesheet" href="/works.css">
-    <div id="nav_stack">
-        {nav.map(([title, tgt]) => tgt === undefined || tgt.slug === entry.slug
-            ? <div><a class="nav_link disabled">{title}</a></div>
-            : <div><a class="nav_link" href={picUrl(tgt)}>{title}</a></div>
-        )}
+  <link slot="head" rel="stylesheet" href="/works.css">
+  <div id="nav_stack">
+    {nav.map(([title, tgt]) => tgt === undefined || tgt.slug === entry.slug
+      ? <div><a class="nav_link disabled" href="#!">{title}</span></div>
+      : <div><a class="nav_link" href={picUrl(tgt)}>{title}</a></div>
+    )}
+  </div>
+  <figure id="imageHolder">
+    <Image class='img' src={entry.data.image} alt={entry.slug} loading="eager" />
+  </figure>
+  <dl>
+    <div class="details details_title">
+      <dt>Title:</dt>
+      <dd>{entry.data.title}</dd>
     </div>
-    <figure id="imageHolder"><PicImg pic={entry} /></figure>
-    <article>
-        <div class="details_title">
-            <p>Title: </p><span>{entry.data.title}</span>
-        </div>
-        <div class="details">
-            <p><span>Width: {entry.data.width}cm, Height: {entry.data.height}cm</span></p>
-        </div>
-        <div class=`details ${entry.data.price ? "" : "missing"}`>
-            <p>Price: </p><span>{entry.data.price}</span>
-        </div>
-    </article>
+    <div class="details">
+      <dt>Size:</dt>
+      <dd>width: {entry.data.width}cm, height: {entry.data.height}cm</dd>
+    </div>
+    <div class=`details ${entry.data.price ? "" : "missing"}`>
+      <dt>price:</dt>
+      <dd>{entry.data.price}</dd>
+    </div>
+  </dl>
 </Layout>
+
+<script is:inline>
+  let dblClck = false;
+  const imgHolder = document.getElementById("imageHolder");
+  imgHolder.onclick = async () => {
+    if (dblClck) {
+      window.open(imgHolder.getElementsByTagName('img')[0].src, '_blank');
+    } else {
+      dblClck = true;
+      imgHolder.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+      await new Promise(r => window.addEventListener('scrollend', r, { once: true }));
+      await new Promise(r => window.addEventListener('scroll', r, { once: true }));
+    }
+    dblClck = false;
+  }
+</script>
+
+<style>
+  dl {
+    display: grid;
+    gap: 2rem;
+    padding: 1rem;
+    text-align: center;
+    margin: 0;
+  }
+
+  .details {
+    display: grid;
+    gap: 0.5em;
+  }
+
+  .details.missing {
+    visibility: hidden;
+  }
+
+  dt {
+    color: hsl(0, 0%, 50%);
+    font-size: 0.7rem;
+  }
+
+  dd {
+    margin-left: 0;
+  }
+
+  dt, dd {
+    display: block;
+    text-align: center;
+  }
+
+  .details dd {
+    font-size: 0.7rem;
+    margin-bottom: 0;
+  }
+
+  .details_title dd {
+    color: hsl(0, 1%, 73%);
+    font-size: 1rem;
+    text-transform: uppercase;
+  }
+
+  .details:not(.details_title) dd {
+    color: hsl(0, 1%, 60%);
+    font-size: 0.8rem;
+  }
+
+  #slidenav {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: space-around;
+  }
+  @media screen and (max-width: 900px) {
+    #nav_stack {
+      display: block flex;
+      flex-direction: row;
+    }
+    #nav_stack div {
+      flex: 1 1 auto;
+      text-align: center;
+    }
+    :global(main) {
+      padding: 5px;
+    }
+    figure {
+      margin: 0 !important;
+    }
+  }
+
+  figure {
+    margin: 0 15px;
+    text-align: center;
+    max-width: calc(100vw - 10px);
+  }
+
+  .img {
+    width: fit-content;
+    height: 100%;
+    max-height: 100vh;
+    max-width: calc(100vw - 10px);
+  }
+</style>
+
+<style is:global>
+
+  :root {
+    color: 
+  }
+
+  #menu-works {
+    font-weight: 600;
+  }
+
+  body {
+    row-gap: 2rem;
+    background-image: linear-gradient(to bottom, hsl(0, 0%, 10%), hsl(0, 0%, 5%)) !important;
+    background-color: hsl(0, 0%, 5%) !important;
+    background-repeat: no-repeat;
+  }
+
+  .nav_link {
+    transition: color 0.5s;
+  }
+
+  a:not(.disabled):hover {
+    color: rgb(236, 127, 127);
+  }
+
+  a.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  
+  main {
+    display: grid;
+    gap: 2rem;
+    padding-inline: 2rem;
+    position: relative;
+  }
+
+  footer {
+    background-color: hsl(0, 0%, 9%) !important;
+  }
+
+  .sociallinks a {
+    color: hsla(0, 63%, 26%, 0.9) !important;
+  }
+</style>
