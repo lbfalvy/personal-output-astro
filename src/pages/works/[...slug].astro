@@ -54,14 +54,23 @@ const nav = [
 <script is:inline>
   let dblClck = false;
   const imgHolder = document.getElementById("imageHolder");
-  imgHolder.onclick = async () => {
+  const img = imgHolder?.getElementsByTagName('img')?.[0];
+  if (!imgHolder || !img) throw new Error("Layout and script out of sync");
+  function focusImage() {
+    imgHolder.scrollIntoView({ behavior: 'instant', block: 'start', inline: 'start' });
+  }
+  img?.onload = focusImage;
+  imgHolder?.onclick = async () => {
     if (dblClck) {
-      window.open(imgHolder.getElementsByTagName('img')[0].src, '_blank');
+      window.open(img.src, '_blank');
     } else {
       dblClck = true;
-      imgHolder.scrollIntoView({ behavior: 'instant', block: 'start', inline: 'start' });
+      focusImage();
       await new Promise(r => window.addEventListener('scrollend', r, { once: true }));
-      await new Promise(r => window.addEventListener('scroll', r, { once: true }));
+      await Promise.any([
+        new Promise(r => window.addEventListener('scroll', r, { once: true })),
+        new Promise(r => window.addEventListener("mouseup", () => setTimeout(r, 20), { once: true })),
+      ]);
     }
     dblClck = false;
   }
