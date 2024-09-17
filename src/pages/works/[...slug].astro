@@ -59,7 +59,7 @@ const nav = [
       window.open(imgHolder.getElementsByTagName('img')[0].src, '_blank');
     } else {
       dblClck = true;
-      imgHolder.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+      imgHolder.scrollIntoView({ behavior: 'instant', block: 'start', inline: 'start' });
       await new Promise(r => window.addEventListener('scrollend', r, { once: true }));
       await new Promise(r => window.addEventListener('scroll', r, { once: true }));
     }
