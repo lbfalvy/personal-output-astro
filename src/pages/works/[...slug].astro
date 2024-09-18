@@ -33,7 +33,10 @@ const nav = [
     )}
   </div>
   <figure id="imageHolder">
-    <Image class='img' id="img" src={entry.data.image} alt={entry.slug} loading="eager" />
+    <Image class='img' id="img"
+      src={entry.data.image} alt={entry.slug} loading="eager"
+      style={{ 'aspect-ratio': `${entry.data.image.height} / ${entry.data.image.width}` }}
+    />
   </figure>
   <dl>
     <div class="details details_title">
@@ -51,32 +54,16 @@ const nav = [
   </dl>
 </Layout>
 
-<script is:inline>
+<script>
   // acquire elements we operate on
   const main = document.getElementsByTagName("main")[0];
   const imgHolder = document.getElementById("imageHolder");
   const img = document.getElementById('img');
   if (!main || !imgHolder || !img) throw new Error("HTML and JS out of sync");
-  // scroll to main when the image loads unless the user already scrolled
-  img.onload = () => main.scrollIntoView({ behavior: 'instant', block: 'start' });
-  window.onscroll = () => window.onscroll = img.onload = undefined;
+  // always start at main, scroll position isn't useful in the gallery
+  main.scrollIntoView({ behavior: 'instant', block: 'start' });
   // Scroll into view or open on new page
-  let dblClck = false;
-  imgHolder.onclick = async () => {
-    if (dblClck) {
-      window.open(img.src, '_blank');
-    } else {
-      dblClck = true;
-      img.scrollIntoView({ behavior: 'instant', block: 'center' });
-      await new Promise(r => window.addEventListener('scrollend', r, { once: true }));
-      await new Promise(r => {
-        window.addEventListener('scroll', r, { once: true });
-        window.addEventListener("mouseup", () => setTimeout(r, 20), { once: true });
-        window.addEventListener("touchend", () => setTimeout(r, 20), { once: true });
-      });
-    }
-    dblClck = false;
-  }
+  img.onclick = () => img.scrollIntoView({ behavior: 'instant', block: 'center' });
 </script>
 
 <style>
