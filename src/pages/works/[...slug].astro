@@ -25,38 +25,39 @@ const nav = [
 ---
 
 <Layout title=`ANNAJA-${entry.data.title}`>
-  <link slot="head" rel="stylesheet" href="/works.css">
-  <div id="nav_stack">
-    {nav.map(([title, tgt]) => tgt === undefined || tgt.slug === entry.slug
-      ? <div><a class="nav_link disabled" href="#!">{title}</span></div>
-      : <div><a class="nav_link" href={picUrl(tgt)}>{title}</a></div>
-    )}
-  </div>
-  <figure id="imageHolder">
-    <Image class='img' id="img"
-      src={entry.data.image} alt={entry.slug} loading="eager"
-      style={{ 'aspect-ratio': `${entry.data.image.width} / ${entry.data.image.height}` }}
-    />
-  </figure>
-  <dl>
-    <div class="details details_title">
-      <dt>Title:</dt>
-      <dd>{entry.data.title}</dd>
+  <article id="main">
+    <div id="nav_stack">
+      {nav.map(([title, tgt]) => tgt === undefined || tgt.slug === entry.slug
+        ? <div><a class="nav_link disabled" href="#!">{title}</span></div>
+        : <div><a class="nav_link" href={picUrl(tgt)}>{title}</a></div>
+      )}
     </div>
-    <div class="details">
-      <dt>Size:</dt>
-      <dd>width: {entry.data.width}cm, height: {entry.data.height}cm</dd>
-    </div>
-    <div class=`details ${entry.data.price ? "" : "missing"}`>
-      <dt>price:</dt>
-      <dd>{entry.data.price}</dd>
-    </div>
-  </dl>
+    <figure id="imageHolder">
+      <Image class='img' id="img"
+        src={entry.data.image} alt={entry.slug} loading="eager"
+        style={{ 'aspect-ratio': `${entry.data.image.width} / ${entry.data.image.height}` }}
+      />
+    </figure>
+    <dl>
+      <div class="details details_title">
+        <dt>Title:</dt>
+        <dd>{entry.data.title}</dd>
+      </div>
+      <div class="details">
+        <dt>Size:</dt>
+        <dd>width: {entry.data.width}cm, height: {entry.data.height}cm</dd>
+      </div>
+      <div class=`details ${entry.data.price ? "" : "missing"}`>
+        <dt>price:</dt>
+        <dd>{entry.data.price}</dd>
+      </div>
+    </dl>
+  </article>
 </Layout>
 
 <script>
   // acquire elements we operate on
-  const main = document.getElementsByTagName("main")[0];
+  const main = document.getElementById("main");
   const imgHolder = document.getElementById("imageHolder");
   const img = document.getElementById('img');
   if (!main || !imgHolder || !img) throw new Error("HTML and JS out of sync");
@@ -129,16 +130,55 @@ const nav = [
       text-align: center;
       padding: 5px;
     }
-    :global(main) {
+    article {
       padding: 5px;
     }
     figure {
       margin: 0 !important;
     }
   }
+  @media screen and (min-width: 900px) {
+    article {
+      margin-right: 1em;
+      grid-template-areas: "picture nav ";
+    }
+    dl {
+      display: grid;
+      align-content: center;
+      padding: 0 0;
+      text-align: center;
+    }
+
+    .details,
+    .details_title {
+      display: grid;
+    }
+
+    img {
+      height: 600px;
+      object-fit: contain;
+    }
+    
+    #nav_stack {
+      position: fixed;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      right: 20px;
+      top: 50vh;
+      transform: translateY(-50%) rotate(180deg);
+      display: flex;
+      flex-direction: row-reverse;
+      text-align: right;
+      height: 100vh;
+      justify-content: center;
+    }
+    #nav_stack > * {
+      margin: 20px 0px;
+    }
+  }
 
   figure {
-    margin: 0 15px;
+    margin: 0;
     text-align: center;
     max-width: calc(100vw - 10px);
   }
@@ -149,6 +189,16 @@ const nav = [
     height: 100%;
     max-height: 100vh;
     max-width: 100%;
+  }
+
+  article {
+    display: grid;
+    gap: 2rem;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    /* padding-inline: 2rem; */
+    position: relative;
+    min-height: 100vh;
   }
 </style>
 
@@ -180,16 +230,6 @@ const nav = [
   a.disabled {
     pointer-events: none;
     opacity: 0.5;
-  }
-  
-  main {
-    display: grid;
-    gap: 2rem;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    padding-inline: 2rem;
-    position: relative;
-    min-height: 100vh;
   }
 
   footer {

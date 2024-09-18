@@ -1,7 +1,9 @@
 ---
-type Props = astroHTML.JSX.AnchorHTMLAttributes & { area: string };
+type Props = astroHTML.JSX.AnchorHTMLAttributes & { area?: string };
 let cls = Astro.props.class ?? '';
-if (new URL(Astro.request.url).pathname.startsWith(Astro.props.area)) {
+const { area, href } = Astro.props;
+const path = new URL(Astro.request.url).pathname;
+if (area ? path.startsWith(area) : path == href) {
   cls += " active"
 }
 ---

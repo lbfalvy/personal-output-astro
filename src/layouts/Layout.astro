@@ -34,11 +34,11 @@ const iconUrl = await getImage({ src: pics.find(x => x.slug == "9-personal_outpu
   <body>
     <nav>
       <div class="nav">
-        <h1 class="title"><a href="/">annaja</a></h1>
+        <h1 class="title"><NavLink href="/">annaja</NavLink></h1>
         <div id="dropdown" class="dropdown-content">
-          <NavLink area="/about" href="/about">about</NavLink>
+          <NavLink href="/about">about</NavLink>
           <NavLink area="/works" href={picUrl(pics.reverse()[0])}>works</NavLink>
-          <NavLink area="/contact" href="/contact">contact</NavLink>
+          <NavLink href="/contact">contact</NavLink>
         </div>
       </div>
       <div id="menuToggle" class="menuToggle">
@@ -109,8 +109,6 @@ const iconUrl = await getImage({ src: pics.find(x => x.slug == "9-personal_outpu
     font-weight: 400;
     margin-bottom: 0.3rem;
   }
-
-  
 
   /* mobile menu toggle button */
   .menuToggle {
