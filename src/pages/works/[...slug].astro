@@ -33,7 +33,7 @@ const nav = [
     )}
   </div>
   <figure id="imageHolder">
-    <Image class='img' src={entry.data.image} alt={entry.slug} loading="eager" />
+    <Image class='img' id="img" src={entry.data.image} alt={entry.slug} loading="eager" />
   </figure>
   <dl>
     <div class="details details_title">
@@ -52,25 +52,28 @@ const nav = [
 </Layout>
 
 <script is:inline>
-  let dblClck = false;
+  // acquire elements we operate on
+  const main = document.getElementsByTagName("main")[0];
   const imgHolder = document.getElementById("imageHolder");
-  const img = imgHolder?.getElementsByTagName('img')?.[0];
-  if (!imgHolder || !img) throw new Error("Layout and script out of sync");
-  function focusImage() {
-    imgHolder.scrollIntoView({ behavior: 'instant', block: 'start', inline: 'start' });
-  }
-  img?.onload = focusImage;
-  imgHolder?.onclick = async () => {
+  const img = document.getElementById('img');
+  if (!main || !imgHolder || !img) throw new Error("HTML and JS out of sync");
+  // scroll to main when the image loads unless the user already scrolled
+  img.onload = () => main.scrollIntoView({ behavior: 'instant', block: 'start' });
+  window.onscroll = () => window.onscroll = img.onload = undefined;
+  // Scroll into view or open on new page
+  let dblClck = false;
+  imgHolder.onclick = async () => {
     if (dblClck) {
       window.open(img.src, '_blank');
     } else {
       dblClck = true;
-      focusImage();
+      img.scrollIntoView({ behavior: 'instant', block: 'center' });
       await new Promise(r => window.addEventListener('scrollend', r, { once: true }));
-      await Promise.any([
-        new Promise(r => window.addEventListener('scroll', r, { once: true })),
-        new Promise(r => window.addEventListener("mouseup", () => setTimeout(r, 20), { once: true })),
-      ]);
+      await new Promise(r => {
+        window.addEventListener('scroll', r, { once: true });
+        window.addEventListener("mouseup", () => setTimeout(r, 20), { once: true });
+        window.addEventListener("touchend", () => setTimeout(r, 20), { once: true });
+      });
     }
     dblClck = false;
   }
@@ -137,6 +140,7 @@ const nav = [
     #nav_stack div {
       flex: 1 1 auto;
       text-align: center;
+      padding: 5px;
     }
     :global(main) {
       padding: 5px;
@@ -150,13 +154,17 @@ const nav = [
     margin: 0 15px;
     text-align: center;
     max-width: calc(100vw - 10px);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
   }
 
   .img {
+    display: block;
     width: fit-content;
     height: 100%;
     max-height: 100vh;
-    max-width: calc(100vw - 10px);
+    max-width: 100%;
   }
 </style>
 
@@ -193,8 +201,11 @@ const nav = [
   main {
     display: grid;
     gap: 2rem;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
     padding-inline: 2rem;
     position: relative;
+    min-height: 100vh;
   }
 
   footer {
