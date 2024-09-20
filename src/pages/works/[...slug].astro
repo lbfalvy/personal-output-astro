@@ -25,6 +25,10 @@ const nav = [
 ] as const;
 ---
 
+<script is:inline define:vars={{ redirect: Astro.params.slug != entry.slug ? picUrl(entry) : undefined }}>
+  if (redirect != undefined) location.assign(redirect)
+</script>
+
 <Layout title=`ANNAJA-${entry.data.title}`>
   <article id="main">
     <div id="nav_stack">
