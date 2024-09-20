@@ -6,7 +6,7 @@ const pics = defineCollection({
         width: z.number(),
         height: z.number(),
         image: image(),
-        price: z.string().optional(),
+        price: z.string().or(z.number()).optional(),
     })
 });
 export const collections = { pics } as const;
