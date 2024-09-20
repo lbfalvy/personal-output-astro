@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getPics, picUrl } from '../../pics';
+import { getPics, picUrl, type Pic } from '../../pics';
 import { Image } from 'astro:assets';
 
 // 1. Generate a new path for every collection entry
@@ -47,9 +47,17 @@ const nav = [
         <dt>Size:</dt>
         <dd>width: {entry.data.width}cm, height: {entry.data.height}cm</dd>
       </div>
-      <div class=`details ${entry.data.price ? "" : "missing"}`>
-        <dt>price:</dt>
-        <dd>&nbsp;{entry.data.price} {typeof entry.data.price == 'string' ? "" : <>&euro;</>}</dd>
+      <div class=`details`>
+        {entry.data.status == 'available' ? <>
+          <dt>price:</dt>
+          <dd>&nbsp;{entry.data.price} {typeof entry.data.price == 'string' ? "" : <>&euro;</>}</dd>
+        </> : entry.data.status == 'sold' ? <>
+          <dt>sold</dt>
+          <dd>&nbsp;</dd>
+        </> : entry.data.status == 'private' ? <>
+          <dt>in private property</dt>
+          <dd>&nbsp;</dd>
+        </> : null}
       </div>
     </dl>
   </article>

@@ -6,7 +6,8 @@ const pics = defineCollection({
         width: z.number(),
         height: z.number(),
         image: image(),
+        status: z.enum(['sold', 'private', 'available']).default('available'),
         price: z.string().or(z.number()).optional(),
-    })
+    }).refine(x => x.status != 'available' || 'price' in x)
 });
 export const collections = { pics } as const;
