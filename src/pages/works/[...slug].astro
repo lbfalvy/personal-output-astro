@@ -6,9 +6,10 @@ import { Image } from 'astro:assets';
 // 1. Generate a new path for every collection entry
 export async function getStaticPaths() {
   const pics = await getPics();
-  return pics.map(entry => ({
-  params: { slug: entry.slug }, props: { entry },
-  }));
+  return pics.flatMap(entry => [
+    { params: { slug: entry.slug }, props: { entry } },
+    { params: { slug: entry.slug.replace(/^0/, '').replace('0-', '-') }, props: { entry } }
+  ]);
 }
 
 // 2. For your template, you can get the entry directly from the prop
