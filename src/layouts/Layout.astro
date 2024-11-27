@@ -24,7 +24,7 @@ const iconUrl = await getImage({ src: pics.find(x => x.slug == "090-personal_out
     <link rel="icon" type="image/svg+xml" href={iconUrl.src} />
     <meta name="generator" content={Astro.generator} />
     <link rel="stylesheet" href="/main.css">
-    <script src="https://kit.fontawesome.com/383945ce77.js" crossorigin="anonymous"></script>
+    <script is:inline src="https://kit.fontawesome.com/383945ce77.js" crossorigin="anonymous"></script>
     {meta?.map(([name, content]) => (
       <meta name={name} content={content} />
     ))}
