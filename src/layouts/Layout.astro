@@ -12,7 +12,7 @@ const { title, meta } = Astro.props;
 
 const pics = await getPics();
 
-const iconUrl = await getImage({ src: pics.find(x => x.slug == "090-personal_output")!.data.image, width: 64 });
+const iconUrl = await getImage({ src: pics.find(x => x.slug == "090-personal_output")!.data.image, inferSize: true, width: 64 });
 ---
 
 <!doctype html>

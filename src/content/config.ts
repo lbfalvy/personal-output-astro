@@ -5,7 +5,7 @@ const pics = defineCollection({
         title: z.string(),
         width: z.number(),
         height: z.number(),
-        image: image(),
+        image: z.string(),
         status: z.enum(['sold', 'private', 'available']).default('available'),
         price: z.string().or(z.number()).optional(),
     }).refine(x => x.status != 'available' || 'price' in x)

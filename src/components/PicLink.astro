@@ -12,7 +12,7 @@ const pic = Astro.props.pic ?? (await getPics()).find(p => p.slug == Astro.props
 if (!pic) throw new Error("Invalid slug");
 ---
 
-<a href={picUrl(pic)}><Image class="img" src={pic.data.image} alt={pic.slug} width={600} /></a>
+<a href={picUrl(pic)}><Image class="img" src={pic.data.image} alt={pic.slug} inferSize={true} width={600} /></a>
 
 <style>
 	a {

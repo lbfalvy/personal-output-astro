@@ -1,7 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getPics, picUrl } from '../../pics';
-import { Image } from 'astro:assets';
+import { getImage, Image } from 'astro:assets';
 
 // 1. Generate a new path for every collection entry
 export async function getStaticPaths() {
@@ -23,6 +23,8 @@ const nav = [
   ['next', pics[pics.findIndex(x => x.slug == entry.slug) + 1]],
   ['last', pics[pics.length - 1]],
 ] as const;
+
+const image = await getImage({ src: entry.data.image, inferSize: true, quality: 'high' });
 ---
 
 <script is:inline define:vars={{ redirect: Astro.params.slug != entry.slug ? picUrl(entry) : undefined }}>
@@ -39,8 +41,10 @@ const nav = [
     </div>
     <figure id="imageHolder">
       <Image class='img' id="img"
-        src={entry.data.image} alt={entry.slug} loading="eager"
-        style={{ 'aspect-ratio': `${entry.data.image.width} / ${entry.data.image.height}` }}
+        inferSize={true}
+        src={image.src} alt={entry.slug} loading="eager"
+        width={entry.data.width} height={entry.data.height}
+        style={{ 'aspect-ratio': `${entry.data.width} / ${entry.data.height}` }}
       />
     </figure>
     <dl>
