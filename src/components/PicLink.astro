@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets'
+import { Image, inferRemoteSize } from 'astro:assets'
 import { getPics, picUrl, type Pic } from '../pics'
 
 interface Props {
@@ -8,11 +8,16 @@ interface Props {
 }
 
 const pic = Astro.props.pic ?? (await getPics()).find(p => p.slug == Astro.props.slug);
-
 if (!pic) throw new Error("Invalid slug");
+const size = await inferRemoteSize(pic?.data.image);
+
 ---
 
-<a href={picUrl(pic)}><Image class="img" src={pic.data.image} alt={pic.slug} inferSize={true} width={600} /></a>
+<a href={picUrl(pic)}>
+	<Image class="img"
+		src={pic.data.image} alt={pic.slug}
+		width={600} height={size.height/size.width*600} />
+</a>
 
 <style>
 	a {
